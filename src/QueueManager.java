@@ -1,8 +1,10 @@
-/** Centralized queue (Singleton): one queue number shared by all help desks. */
+import java.util.ArrayList;
+import java.util.List;
+
 public class QueueManager {
     private static QueueManager instance;
-    private int lastIssued = 0;   // last ticket given to a visitor
-    private int nowServing = 0;   // number currently being served
+    private int currentNumber = 0;
+    private final List<OnlineMonitor> monitors = new ArrayList<>();
 
     private QueueManager() { }
 
@@ -13,30 +15,31 @@ public class QueueManager {
         return instance;
     }
 
-    public synchronized int issueTicket() {
-        lastIssued++;
-        return lastIssued;
+  
+    public synchronized int getNextQueueNumber() {
+        currentNumber++;
+        updateMonitors();
+        return currentNumber;
     }
 
-    /** Returns the next number to serve, or -1 if nobody is waiting. */
-    public synchronized int callNext() {
-        if (nowServing >= lastIssued) {
-            return -1;
+
+    public synchronized void resetQueueNumber(int newNumber) {
+        currentNumber = newNumber;
+        updateMonitors();
+    }
+
+    public synchronized int getCurrentNumber() {
+        return currentNumber;
+    }
+
+    public synchronized void addMonitor(OnlineMonitor monitor) {
+        monitors.add(monitor);
+    }
+
+
+    private void updateMonitors() {
+        for (OnlineMonitor m : monitors) {
+            m.display(currentNumber);
         }
-        nowServing++;
-        return nowServing;
-    }
-
-    /** After a reset, the next ticket issued will be newNumber. */
-    public synchronized void reset(int newNumber) {
-        if (newNumber < 1) {
-            throw new IllegalArgumentException("Reset number must be 1 or higher.");
-        }
-        lastIssued = newNumber - 1;
-        nowServing = newNumber - 1;
-    }
-
-    public synchronized int getNowServing() {
-        return nowServing;
     }
 }
