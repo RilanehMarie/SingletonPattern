@@ -7,4 +7,4 @@ Each help desk station has an option to reset the queuing number based on an inp
 This approach aims to maintain an organized queuing process for individuals visiting the office and provides the flexibility to handle queue adjustments as needed.
 
 # UML DIAGRAM
-![alt text](image.png)
+<img width="672" height="620" alt="image" src="https://github.com/user-attachments/assets/f606a163-14f9-4618-9f26-0e194dc5410d" />
